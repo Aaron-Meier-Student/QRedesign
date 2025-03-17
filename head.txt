@@ -138,6 +138,10 @@
             }
 
             #queue > div > h2 {
+                overflow: hidden;
+                max-width: 300px;
+                text-wrap: nowrap;
+                text-overflow: ellipsis;
                 position: absolute;
                 top: 10px;
                 left: 65px;
