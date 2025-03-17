@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Music Queue</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=refresh"
+        />
+        <style>
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background: radial-gradient(
+                        circle at top,
+                        #00ffc81e 10%,
+                        transparent 70%
+                    ),
+                    #0d0e0f;
+            }
+
+            * {
+                font-family: Montserrat;
+                color: white;
+                user-select: none;
+                transition: 250ms;
+            }
+
+            h1 {
+                color: #00ff9d;
+            }
+
+            #add {
+                display: flex;
+                flex-direction: column;
+                width: 400px;
+            }
+
+            #add > * {
+                width: calc(100% - 20px);
+                height: 30px;
+                padding: 5px 10px;
+                text-align: center;
+                border-radius: 4px;
+                border: none;
+                outline: none;
+                margin: 5px 0;
+            }
+
+            input {
+                background-color: #00ffc81e;
+            }
+
+            #add > input:first-child {
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+            }
+
+            #add > span {
+                width: 100%;
+                padding: 0;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            button {
+                cursor: pointer;
+                border-radius: 4px;
+                border: none;
+                background-color: #00af89;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+            }
+
+            button:hover {
+                background-color: #008165;
+            }
+
+            button:active {
+                background-color: #006952;
+            }
+
+            #submit {
+                margin-right: 5px;
+                width: 100%;
+                border-bottom-left-radius: 8px;
+            }
+
+            #refresh {
+                margin-left: 5px;
+                width: 30px;
+                height: 30px;
+                border-bottom-right-radius: 8px;
+            }
+
+            hr {
+                width: 400px;
+                opacity: 0.1;
+                margin: 0 0 25px 0;
+            }
+
+            #queue {
+                width: 400px;
+                height: calc(100% - 225px);
+                overflow-y: auto;
+                overflow-x: hidden;
+                border-radius: 4px;
+            }
+
+            #queue > div {
+                position: relative;
+                opacity: 0;
+                width: 100%;
+                height: 60px;
+                background-color: #00ffc81e;
+                margin: 10px 0;
+                border-radius: 4px;
+            }
+
+            #queue > div > img {
+                width: 45px;
+                height: 45px;
+                border-radius: 4px;
+                margin: 8px;
+            }
+
+            #queue > div > h2 {
+                position: absolute;
+                top: 10px;
+                left: 65px;
+                margin: 0;
+                font-weight: 650;
+                font-size: 20px;
+            }
+
+            #queue > div > h3 {
+                position: absolute;
+                top: 32px;
+                left: 65px;
+                margin: 0;
+                font-weight: 600;
+                font-size: 12px;
+                opacity: 0.4;
+            }
+
+            #queue > div:first-child {
+                margin-top: 0;
+                border-top-right-radius: 8px;
+                border-top-left-radius: 8px;
+            }
+            #queue > div:last-child {
+                margin-bottom: 0;
+                border-bottom-right-radius: 8px;
+                border-bottom-left-radius: 8px;
+            }
+
+            .show {
+                opacity: 1 !important;
+            }
+
+            h5 {
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Music Queue</h1>
+        <div id="add">
+            <input type="text" id="song" placeholder="Song Name" />
+            <input type="text" id="artist" placeholder="Artist Name" />
+            <span>
+                <button id="submit">Add to Queue</button>
+                <button id="refresh">
+                    <span class="material-symbols-rounded"> refresh </span>
+                </button>
+            </span>
+            <h5 id="message"></h5>
+        </div>
+        <hr />
+        <div id="queue">
+            <!--
+            <div class="show">
+                <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQOuXSNhx4c8pKvcysPWidz4NibDU-xLeaJw&s"
+                    alt="Song Image"
+                />
+                <h2>Song Name Here</h2>
+                <h3>Artist Name Here</h3>
+            </div>
+            -->
+        </div>
+        <script defer>
+            function getSongNode(songName, artistName, imageUrl) {
+                const div = document.createElement("div");
+                div.className = "show";
+                const img = document.createElement("img");
+                img.src = imageUrl;
+                img.alt = "Song Image";
+                const h2 = document.createElement("h2");
+                h2.textContent = songName;
+                const h3 = document.createElement("h3");
+                h3.textContent = artistName;
+                div.appendChild(img);
+                div.appendChild(h2);
+                div.appendChild(h3);
+                return div;
+            }
+
+            const queueDisplay = document.getElementById("queue");
+
+            document
+                .getElementById("submit")
+                .addEventListener("click", async () => {
+                    const song = document.getElementById("song").value.trim();
+                    const artist = document
+                        .getElementById("artist")
+                        .value.trim();
+
+                    const messageDiv = document.getElementById("message");
+                    messageDiv.innerHTML = "";
+
+                    if (!song || !artist) {
+                        messageDiv.textContent =
+                            "Both song and artist are required!";
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(
+                            `/add-song?song=${song}&artist=${artist}`,
+                            {
+                                method: "POST",
+                            }
+                        );
+
+                        if (response.ok) {
+                            messageDiv.textContent =
+                                "Song added to the queue successfully!";
+                        } else {
+                            const error = await response.text();
+                            messageDiv.textContent = `Error: ${error}`;
+                        }
+                    } catch (error) {
+                        console.error("Error adding song to queue:", error);
+                        messageDiv.textContent =
+                            "Failed to add song to queue. Please try again.";
+                    }
+                });
+            async function fetchQueue() {
+                console.log("Fetching queue...");
+                try {
+                    const response = await fetch("/get-queue");
+
+                    if (!response.ok) {
+                        console.error(
+                            "Error fetching queue:",
+                            response.statusText
+                        );
+                        return;
+                    }
+
+                    const queue = await response.json();
+
+                    queueDisplay.innerHTML = "";
+
+                    for (let i = 0; i < queue.length; i++) {
+                        const song = queue[i];
+                        const songNode = getSongNode(
+                            song.name,
+                            song.artist,
+                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQOuXSNhx4c8pKvcysPWidz4NibDU-xLeaJw&s"
+                        );
+                        queueDisplay.appendChild(songNode);
+                        setTimeout(() => {
+                            songNode.classList.add("show");
+                        }, i * 10);
+                    }
+                } catch (error) {
+                    console.error("Error fetching queue:", error);
+                }
+            }
+            fetchQueue();
+            document.getElementById("refresh").addEventListener("click", () => {
+                fetchQueue();
+            });
+        </script>
+    </body>
+</html>
