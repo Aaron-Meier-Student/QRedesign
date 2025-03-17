@@ -80,7 +80,7 @@ function getSongNode(songName, artistName, imageUrl) {
                         queueDisplay.appendChild(songNode);
                         setTimeout(() => {
                             songNode.classList.add("show");
-                        }, i * 10);
+                        }, i * 35);
                     }
                 } catch (error) {
                     console.error("Error fetching queue:", error);
